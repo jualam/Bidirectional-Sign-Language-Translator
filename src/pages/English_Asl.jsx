@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import iwantwater21 from '../assets/iwantwater_21.png'
+import iwantwater22 from '../assets/iwantwater_22.png'
+import iwantwater23 from '../assets/iwantwater_23.png'
 
 function EnglishAsl() {
-  const [text, setText] = useState('')
-
   return (
     <div className="min-h-screen bg-[#f8f7f4] text-[#1a1a1a] px-6 py-10">
 
@@ -34,15 +34,12 @@ function EnglishAsl() {
         <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
 
           <label className="block text-sm font-medium mb-3">
-            Enter Text
+            Input Text
           </label>
 
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Type your sentence here..."
-            className="w-full h-48 p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
-          />
+          <div className="w-full h-48 border border-blue-100 bg-blue-50 rounded-xl p-6 text-2xl font-semibold text-blue-900 flex items-center justify-center text-center shadow-sm">
+            I want water
+          </div>
 
           {/* Buttons */}
           <div className="flex items-center justify-between mt-6">
@@ -64,10 +61,22 @@ function EnglishAsl() {
         {/*Right: Video */}
         <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm flex flex-col justify-center items-center">
 
-          <div className="w-full h-72 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center mb-5">
-            <span className="text-gray-400 text-sm">
-              ASL gesture video will appear here
-            </span>
+          <div className="w-full h-72 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center gap-3 p-4 mb-5 bg-gray-50">
+            <img
+              src={iwantwater21}
+              alt="ASL frame 1"
+              className="h-full w-1/3 rounded-lg object-cover"
+            />
+            <img
+              src={iwantwater22}
+              alt="ASL frame 2"
+              className="h-full w-1/3 rounded-lg object-cover"
+            />
+            <img
+              src={iwantwater23}
+              alt="ASL frame 3"
+              className="h-full w-1/3 rounded-lg object-cover"
+            />
           </div>
 
           <p className="text-xs text-gray-500 text-center max-w-xs">
