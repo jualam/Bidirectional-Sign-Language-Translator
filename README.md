@@ -1,16 +1,103 @@
-# React + Vite
+# ASL-Translator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Quick setup notes for the team for now. We can make this cleaner later, but this should be enough to get everyone running without confusion.
 
-Currently, two official plugins are available:
+## Project structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `ASL_frontend` = React frontend
+- `ASL_backend` = Django + Django REST Framework backend
 
-## React Compiler
+## What you need
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js installed
+- Python `3.11.x` installed
+- Git
 
-## Expanding the ESLint configuration
+## First time setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Clone the repo and go into the project:
+
+```powershell
+git clone <repo-url>
+cd ASL-Translator
+```
+
+## Frontend setup
+
+Open one terminal:
+
+```powershell
+cd ASL_frontend
+npm install
+npm run dev
+```
+
+That should start the frontend dev server. Vite usually gives you a local URL in the terminal.
+
+## Backend setup
+
+Open another terminal:
+
+```powershell
+cd ASL_backend
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+Backend should run at:
+
+```text
+http://127.0.0.1:8000/
+```
+
+Test API route:
+
+```text
+http://127.0.0.1:8000/api/hello/
+```
+
+## Every time after that
+
+Frontend:
+
+```powershell
+cd ASL_frontend
+npm run dev
+```
+
+Backend:
+
+```powershell
+cd ASL_backend
+.\venv\Scripts\Activate.ps1
+python manage.py runserver
+```
+
+## Important notes
+
+- Use Python `3.11.x` for the backend.
+- Do not push `venv`, `.env`, or `db.sqlite3`.
+- If backend packages change, run:
+
+```powershell
+pip freeze > requirements.txt
+```
+
+- If models change, run:
+
+```powershell
+python manage.py makemigrations
+python manage.py migrate
+```
+
+- Then commit the migration files.
+
+## If something is not working
+
+- Make sure you are inside the correct folder before running commands.
+- Make sure the backend venv is activated.
+- If `pip install -r requirements.txt` fails, check that Python is `3.11.x`.
+- If frontend fails, try `npm install` again inside `ASL_frontend`.
