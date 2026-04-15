@@ -65,7 +65,6 @@ Frontend:
 
 ```powershell
 cd ASL_frontend
-npm install
 npm run dev
 ```
 
