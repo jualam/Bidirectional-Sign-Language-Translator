@@ -30,6 +30,6 @@ def asl_to_english(request):
                     meanings.append(result.names[int(cls)])
         
     
-    response = Response({"message": "ASL to English placeholder", "images": meanings})
+    response = Response({"message": "Warning: API Incomplete", "translation": meanings})
        
     return response

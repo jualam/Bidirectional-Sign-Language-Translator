@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+.hidden-file-input {
+	opacity: 0;
+	position: absolute;
+	z-index: -1;
+}
+.hidden-file-input-label {
+	cursor: pointer;
+}
