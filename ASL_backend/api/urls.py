@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import asl_to_english, english_to_asl, hello
+from .views import english_to_asl, hello
+from .asl_to_english import asl_to_english
 
 urlpatterns = [
     path("hello/", hello, name="hello"),
