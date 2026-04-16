@@ -1,38 +1,32 @@
 import { Link } from 'react-router-dom'
-import { useState, useRef, useEffect } from 'react'
-import iwantwater21 from '../assets/iwantwater_21.png'
-import iwantwater22 from '../assets/iwantwater_22.png'
-import iwantwater23 from '../assets/iwantwater_23.png'
-import {
-	HandLandmarker,
-	FilesetResolver,
-	DrawingUtils
-} from "../../node_modules/@mediapipe/tasks-vision/vision_bundle.mjs"
+import { useEffect } from 'react'
+import loadingGif from '../assets/loading.gif'
+import landmarkerTask from '../assets/hand_landmarker.task'
 
+import {
+  HandLandmarker,
+  FilesetResolver,
+  DrawingUtils
+} from "../../node_modules/@mediapipe/tasks-vision/vision_bundle.mjs"
 const vision = await FilesetResolver.forVisionTasks(
-	"../../node_modules/@mediapipe/tasks-vision/wasm"
+  "../../node_modules/@mediapipe/tasks-vision/wasm"
 );
 const handLandmarker = await HandLandmarker.createFromOptions(
-    vision,
-    {
-      baseOptions: {
-        modelAssetPath: "../assets/hand_landmarker.task"
-      },
-	  runningMode: "VIDEO",
-      numHands: 1
-    });
+  vision,
+  {
+    baseOptions: {
+      modelAssetPath: landmarkerTask
+    },
+    runningMode: "VIDEO",
+    numHands: 1
+  });
 
-function AslEnglish() {
-  const videoRef = useRef(null);
-  const fileInputRef = useRef(null);
-  const captureButtonRef = useRef(null);
-  const textOutputRef = useRef(null);
-  
+function AslEnglish() {  
   useEffect(() => {
-    const video = videoRef.current
-    const fileInput = fileInputRef.current
-    const captureButton = captureButtonRef.current
-    const textOutput = textOutputRef.current
+    const video = document.getElementById('input-video')
+    const fileInput = document.getElementById('video-upload')
+    const captureButton = document.getElementById('toggle-capture') 
+    const textOutput = document.getElementById('text-output')
     
     let detectionMode = 0;
     let animationFrame = null;
@@ -43,13 +37,15 @@ function AslEnglish() {
       else {
         if (detectionMode == 1) stopWebcam();
         else if (detectionMode == 2) stopVideo();
-        
         translate();
       }
       
+      setButtonText();
+    }
+    function setButtonText() {
       if (detectionMode == 0) captureButton.innerText = "Start Capture";
-      else if (detectionMode == 1) captureButton.innerText = "Stop Capture";
-      else if (detectionMode == 2) captureButton.innerText = "Clear Video";
+      else if (detectionMode == 1) captureButton.innerText = "Start Translation";
+      else if (detectionMode == 2) captureButton.innerText = "Stop Video and Translate";
     }
     
     
@@ -68,8 +64,8 @@ function AslEnglish() {
       }
   
       navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {
-        video.srcObject = stream;
         video.addEventListener("loadeddata", predict);
+        video.srcObject = stream;
       });
       detectionMode = 1;
     }
@@ -81,6 +77,7 @@ function AslEnglish() {
           track.stop();
         }
       }
+      video.srcObject = null;
       video.src = "";
       video.removeEventListener("loadeddata", predict);
       detectionMode = 0;
@@ -99,6 +96,7 @@ function AslEnglish() {
         video.addEventListener("loadeddata", predict);
         video.src = URL.createObjectURL(fileInput.files[0]);
         detectionMode = 2;
+        setButtonText();
       }
     }
     function stopVideo() {
@@ -230,12 +228,12 @@ function AslEnglish() {
     async function predict() {
       // only predict if a video is running
       if (detectionMode === 0) return;
-      
+            
       // only predict if the video has advanced
       if (lastVideoTime !== video.currentTime) {
         lastVideoTime = video.currentTime;
         results = handLandmarker.detectForVideo(video, performance.now());
-        
+
         let inFrame = results.landmarks.length > 0;
         let changed = [false,false];
         
@@ -246,10 +244,10 @@ function AslEnglish() {
         }
         
         if (changed[0]) {
-          //console.log(performance.now() + ': wrist moved');
+          console.log(performance.now() + ': wrist moved');
           saved.push(buffer[buffer.length-1-STILL_TIME_MIDPOINT].frame);
         } else if (changed[1]) {
-          //console.log(performance.now() + ': hand moved');
+          console.log(performance.now() + ': hand moved');
           saved.push(buffer[buffer.length-1-STILL_TIME_MIDPOINT].frame);
         }
       }
@@ -260,22 +258,27 @@ function AslEnglish() {
 
     // translation API call
     async function translate() {
-      const form = new FormData()
+      if (saved.length > 0) {
+      textOutput.innerHTML = `<image src=${loadingGif}></image>`
+      const vform = new FormData()
       
       for (let i = 0; i < saved.length; i++) {
         const blob = await new Promise(resolve => saved[i].toBlob(resolve, "image/jpeg"));
-        form.append('images', blob, `frame_${i}.jpg`);
+        vform.append('images', blob, `frame_${i}.jpg`);
       }
+      
+      
       
       const response = await fetch(
         "http://localhost:8000/api/asl-to-english/", {
           method: "POST",
-          body: form
+          body: vform
         });
       const result = await response.json();
       
       textOutput.innerText=result.translation;
       saved = [];
+      }
     }
     
   },[])
@@ -327,7 +330,7 @@ function AslEnglish() {
             Camera Input
           </label>
 
-          <div className="w-full h-72 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center gap-3 p-4 mb-5 bg-gray-50">
+          <div className="w-full h-72 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center gap-3 mb-5 bg-gray-50">
             {/*<img
                   src={iwantwater21}
                   alt="ASL frame 1"
@@ -343,19 +346,19 @@ function AslEnglish() {
                   alt="ASL frame 3"
                   className="h-full w-1/3 rounded-lg object-cover"
             />*/}
-            <video id='input-video' ref={videoRef} autoPlay muted></video>
+            <video id='input-video' className='h-full' autoPlay muted></video>
           </div>
 
           {/* Buttons */}
           <div className="flex items-center justify-between w-full mt-2">
 
-            <label for='video-upload' className="hidden-file-input-label text-sm text-gray-600 border border-gray-300 px-5 py-2 rounded-lg hover:bg-gray-100 transition">
+            <label htmlFor='video-upload' className="hidden-file-input-label text-sm text-gray-600 border border-gray-300 px-5 py-2 rounded-lg hover:bg-gray-100 transition">
               📁 Upload
             </label>
-            <input type='file' className="hidden-file-input" ref={fileInputRef} name='video-upload' id='video-upload' accept='video/mp4'></input>
+            <input type='file' className="hidden-file-input" name='video-upload' id='video-upload' accept='video/mp4'></input>
 
-            <button id='toggle-capture' ref={captureButtonRef} className="bg-blue-600 text-white px-7 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-              "Start Capture"
+            <button id='toggle-capture' className="bg-blue-600 text-white px-7 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+              Start Capture
             </button>
 
           </div>
@@ -386,8 +389,8 @@ function AslEnglish() {
               className="absolute bottom-10 right-10 h-4 w-4 rounded-full bg-white/60"
               style={{ animation: 'waterRise 3.6s ease-in-out infinite 0.6s' }}
             /> */}
-            <div ref={textOutputRef} className="relative z-10 tracking-wide">
-              I want water
+            <div id='text-output' className="relative z-10 tracking-wide">
+              
             </div>
           </div>
 
