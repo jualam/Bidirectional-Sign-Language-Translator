@@ -101,3 +101,15 @@ python manage.py migrate
 - Make sure the backend venv is activated.
 - If `pip install -r requirements.txt` fails, check that Python is `3.11.x`.
 - If frontend fails, try `npm install` again inside `ASL_frontend`.
+
+## Check ASL video database
+
+```
+Add videos > ASL_backend > assets then run the commands below.
+powershell
+cd ASL_backend
+.\venv\Scripts\python.exe manage.py migrate
+.\venv\Scripts\python.exe manage.py sync_asl_videos
+.\venv\Scripts\python.exe manage.py runserver
+http://127.0.0.1:8000/assets/hello.mp4
+```

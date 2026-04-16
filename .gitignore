@@ -1,5 +1,7 @@
 ASL_backend/venv/
 ASL_backend/.env
 ASL_backend/db.sqlite3
+ASL_backend/assets/*
+!ASL_backend/assets/.gitkeep
 **/__pycache__/
 *.pyc
