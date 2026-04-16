@@ -1,6 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from .services import build_translation_sequence
+
 
 @api_view(["GET"])
 def hello(request):
@@ -14,5 +16,23 @@ def hello(request):
 
 @api_view(["POST"])
 def english_to_asl(request):
-    texts = request.data.get("texts", [])
-    return Response({"message": "English to ASL placeholder", "texts": texts})
+    text = request.data.get("text", "")
+    if not isinstance(text, str) or not text.strip():
+        return Response(
+            {
+                "message": "Provide English text to translate.",
+                "words": [],
+                "sequence": [],
+                "missing_words": [],
+                "missing_letters": [],
+            },
+            status=400,
+        )
+
+    result = build_translation_sequence(text)
+    return Response(
+        {
+            "message": "English to ASL translation sequence generated.",
+            **result,
+        }
+    )
