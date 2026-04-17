@@ -5,3 +5,4 @@ ASL_backend/assets/*
 !ASL_backend/assets/.gitkeep
 **/__pycache__/
 *.pyc
+.vscode/settings.json
