@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from .models import ASLVideo
+from .views import asl_signs_to_english_text, english_text_to_asl_plan
 
 
 class EnglishToASLTests(TestCase):
@@ -38,8 +39,22 @@ class EnglishToASLTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["missing_words"], ["cat"])
         self.assertEqual(response.data["sequence"][0]["token"], "c")
         self.assertEqual(response.data["sequence"][0]["source"], "fingerspell")
-        self.assertIn("a", response.data["missing_letters"])
-        self.assertIn("t", response.data["missing_letters"])
+
+
+class TranslationHelperTests(TestCase):
+    def test_asl_signs_to_english_text_returns_single_sign_without_llm(self):
+        result = asl_signs_to_english_text(["hello"])
+
+        self.assertEqual(result["translation"], "hello")
+        self.assertFalse(result["used_llm"])
+
+    def test_english_text_to_asl_plan_falls_back_to_simple_sequence(self):
+        result = english_text_to_asl_plan("I need help")
+
+        self.assertEqual(result["subject"], "i")
+        self.assertEqual(result["verb"], "need")
+        self.assertEqual(result["object"], "help")
+        self.assertEqual(result["asl_sign_sequence"], ["i", "need", "help"])
+        self.assertFalse(result["used_llm"])

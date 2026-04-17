@@ -20,62 +20,11 @@ def video_payload(video, source):
         "source": source,
         "url": video.video.url,
     }
-#It lowercases everything and ignores punctuation.
-"""
-Example input:
-build_translation_sequence("hello yes")
-It checks the database and returns something like:
 
-{
-    "words": ["hello", "yes"],
-    "sequence": [
-        {
-            "id": 1,
-            "token": "hello",
-            "kind": "word",
-            "source": "word",
-            "url": "/assets/hello.mp4"
-        },
-        {
-            "id": 2,
-            "token": "yes",
-            "kind": "word",
-            "source": "word",
-            "url": "/assets/yes.mp4"
-        }
-    ],
-    "missing_words": [],
-    "missing_letters": []
-}
-
-Example input:
-
-build_translation_sequence("hello yes")
-It checks the database and returns something like:
-
-{
-    "words": ["hello", "yes"],
-    "sequence": [
-        {
-            "id": 1,
-            "token": "hello",
-            "kind": "word",
-            "source": "word",
-            "url": "/assets/hello.mp4"
-        },
-        {
-            "id": 2,
-            "token": "yes",
-            "kind": "word",
-            "source": "word",
-            "url": "/assets/yes.mp4"
-        }
-    ],
-    "missing_words": [],
-    "missing_letters": []
-}
-"""
 def build_translation_sequence(text):
+    # This is a temporary matcher for the current prototype.
+    # It assumes the LLM returns tokens that can be matched directly to ASLVideo.token.
+    # TODO: update this once the final video dataset and token naming rules are decided.
     words = tokenize_text(text)
     sequence = []
     missing_words = []
@@ -120,18 +69,10 @@ def build_translation_sequence(text):
         "missing_words": missing_words,
         "missing_letters": sorted(set(missing_letters)),
     }
-"""
-This scans the local assets folder and creates/updates 
-DB rows automatically.
-
-It follows this rule:
-
-hello.mp4 becomes kind="word", token="hello"
-yes.mp4 becomes kind="word", token="yes"
-h.mp4 becomes kind="letter", token="h"
-a.mp4 becomes kind="letter", token="a"
-"""
 def sync_asset_videos():
+    # This helper is for when local sign videos are added under MEDIA_ROOT
+    # such as D:\ASL-Translator\ASL_backend\assets.
+    # TODO: revisit if you later store videos differently or rename tokens.
     created = 0
     updated = 0
     skipped = []
