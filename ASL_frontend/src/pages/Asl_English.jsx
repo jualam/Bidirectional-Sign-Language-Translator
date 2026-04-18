@@ -21,8 +21,11 @@ const handLandmarker = await HandLandmarker.createFromOptions(
     numHands: 1
   });
 
-function AslEnglish() {  
+function AslEnglish() {
+  let hasRun = 0;
   useEffect(() => {
+	if (hasRun == 0) {
+	hasRun = hasRun + 1;
     const video = document.getElementById('input-video')
     const fileInput = document.getElementById('video-upload')
     const captureButton = document.getElementById('toggle-capture') 
@@ -280,7 +283,7 @@ function AslEnglish() {
       saved = [];
       }
     }
-    
+    }
   },[])
   
   

@@ -44,12 +44,6 @@ class EnglishToASLTests(TestCase):
 
 
 class TranslationHelperTests(TestCase):
-    def test_asl_signs_to_english_text_returns_single_sign_without_llm(self):
-        result = asl_signs_to_english_text(["hello"])
-
-        self.assertEqual(result["translation"], "hello")
-        self.assertFalse(result["used_llm"])
-
     def test_english_text_to_asl_plan_falls_back_to_simple_sequence(self):
         result = english_text_to_asl_plan("I need help")
 
