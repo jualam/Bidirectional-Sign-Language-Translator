@@ -2,6 +2,20 @@
 
 Quick setup notes for the team for now. We can make this cleaner later, but this should be enough to get everyone running without confusion.
 
+---
+
+# Todo
+
+- Video files should be stored on the frontend, in the public folder
+	- one folder to hold words, another to hold letters
+	- management/comands/sync_asl_videos.py, services.py, and tests.py need to be updated with this location
+	
+- Connect english->asl frontend to backend
+
+- re-train YOLO model (current version is very inaccurate)
+
+---
+
 ## Project structure
 
 - `ASL_frontend` = React frontend
@@ -22,7 +36,12 @@ git clone <repo-url>
 cd ASL-Translator
 ```
 
-## Frontend setup
+Make sure `llama3.2:3b` is installed
+```powershell
+ollama run llama3.2:3b
+```
+
+### Frontend setup
 
 Open one terminal:
 
@@ -34,7 +53,8 @@ npm run dev
 
 That should start the frontend dev server. Vite usually gives you a local URL in the terminal.
 
-## Backend setup
+### Backend setup
+Open Ollama process, then
 
 Open another terminal:
 
@@ -56,7 +76,7 @@ http://127.0.0.1:8000/
 Test API route:
 
 ```text
-http://127.0.0.1:8000/api/hello/
+http://127.0.0.1:8000/api/health/
 ```
 
 ## Every time after that
@@ -69,7 +89,7 @@ npm run dev
 ```
 
 Backend:
-
+Open Ollama process, and in terminal
 ```powershell
 cd ASL_backend
 .\venv\Scripts\Activate.ps1
