@@ -9,6 +9,7 @@ Quick setup notes for the team for now. We can make this cleaner later, but this
 - Connect english->asl frontend to backend
 
 - re-train YOLO model (current version is very inaccurate) (update path in asl_to_english.py)
+	- add more words (bathroom, library, where, see, you, later, how, good, thanks)
 
 ---
 

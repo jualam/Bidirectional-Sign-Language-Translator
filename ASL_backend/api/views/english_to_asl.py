@@ -1,14 +1,14 @@
 from rest_framework.decorators import api_view, parser_classes
-from rest_framework.parsers import FormParser
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from ..services import build_translation_sequence
 from ..models import ASLVideo
-from ollama import chat
+#from ollama import chat
 
-OLLAMA_MODEL = "llama3.2:3b"
+#OLLAMA_MODEL = "llama3.2:3b"
 
 @api_view(["POST"])
-#@parser_classes([FormParser])
+@parser_classes([MultiPartParser])
 def english_to_asl(request):
     text = request.data.get("text", "")
     conversation_context = request.data.get("context", "")
@@ -42,7 +42,8 @@ replace = {
     "me":"i",
     "my":"i",
     "your":"you",
-    "wasn't":"not"
+    "wasn't":"not",
+    "hi":"hello"
 }
 def english_to_signs(text, conversation_context=""):
     words = [word.lower() for word in text.split() if word.strip()]

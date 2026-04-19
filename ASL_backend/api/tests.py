@@ -41,7 +41,7 @@ class EnglishToASLTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["sequence"][0]["token"], "c")
         self.assertEqual(response.data["sequence"][0]["source"], "fingerspell")
-        self.assertEqual(response.data["sequence"][0]["path"], "/letters/c.MOV")
+        self.assertEqual(response.data["sequence"][0]["path"], "/letters/c.mov")
 
 
 class TranslationHelperTests(TestCase):

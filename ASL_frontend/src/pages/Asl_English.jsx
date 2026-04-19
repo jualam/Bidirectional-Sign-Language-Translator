@@ -315,9 +315,19 @@ function AslEnglish() {
 
       {/* Title */}
       <div className="max-w-6xl mx-auto mb-12">
-        <h1 className="text-3xl font-serif font-semibold mb-2">
-          ASL → English
-        </h1>
+        <div className="flex align-center mb-2">
+			<h1 className="text-3xl font-serif font-semibold w-fit">
+			  ASL → English
+			</h1>
+			<div className="max-w-6xl ml-4">
+				<Link
+					to="/english-to-asl"
+					className="inline-block text-sm px-4 py-2 border border-gray-300 rounded-full bg-white hover:bg-gray-100 hover:border-blue-500 hover:text-blue-600 transition"
+				>
+					Switch mode
+				</Link>
+			  </div>
+		</div>
         <p className="text-gray-600 text-sm">
           Capture hand gestures using your camera and translate them into English.
         </p>

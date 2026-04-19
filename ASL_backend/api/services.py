@@ -66,8 +66,8 @@ def sync_asset_videos():
     word_assets_path = settings.BASE_VIDEO_PATH / "words"
     letter_assets_path = settings.BASE_VIDEO_PATH / "letters"
     assets = (
-        (word_assets_path, ASLVideo.Kind.WORD, "/letters/"),
-        (letter_assets_path, ASLVideo.Kind.LETTER, "/words/")
+        (word_assets_path, ASLVideo.Kind.WORD, "/words/"),
+        (letter_assets_path, ASLVideo.Kind.LETTER, "/letters/")
     )
 
     for assets_path, type, dir in assets:
