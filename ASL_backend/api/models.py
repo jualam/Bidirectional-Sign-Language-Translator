@@ -8,7 +8,7 @@ class ASLVideo(models.Model):
 
     token = models.CharField(max_length=80)
     kind = models.CharField(max_length=10, choices=Kind.choices, default=Kind.WORD)
-    video = models.FileField(upload_to="")
+    path = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

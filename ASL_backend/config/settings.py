@@ -124,6 +124,8 @@ STATIC_URL = 'static/'
 MEDIA_URL = '/assets/'
 MEDIA_ROOT = BASE_DIR / 'assets'
 
+BASE_VIDEO_PATH = BASE_DIR.parent / "ASL_frontend" / "public"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

@@ -5,14 +5,10 @@ Quick setup notes for the team for now. We can make this cleaner later, but this
 ---
 
 # Todo
-
-- Video files should be stored on the frontend, in the public folder
-	- one folder to hold words, another to hold letters
-	- management/comands/sync_asl_videos.py, services.py, and tests.py need to be updated with this location
 	
 - Connect english->asl frontend to backend
 
-- re-train YOLO model (current version is very inaccurate)
+- re-train YOLO model (current version is very inaccurate) (update path in asl_to_english.py)
 
 ---
 
@@ -23,8 +19,9 @@ Quick setup notes for the team for now. We can make this cleaner later, but this
 
 ## What you need
 
-- Node.js installed
-- Python `3.11.x` installed
+- Node.js
+- Python `3.11.x`
+- Ollama
 - Git
 
 ## First time setup
@@ -51,7 +48,10 @@ npm install
 npm run dev
 ```
 
-That should start the frontend dev server. Vite usually gives you a local URL in the terminal.
+Frontend should run at:
+```text
+http://127.0.0.1:5173
+```
 
 ### Backend setup
 Open Ollama process, then
@@ -63,7 +63,9 @@ cd ASL_backend
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+python manage.py makemigrations
 python manage.py migrate
+python manage.py sync_asl_videos
 python manage.py runserver
 ```
 
@@ -82,14 +84,15 @@ http://127.0.0.1:8000/api/health/
 ## Every time after that
 
 Frontend:
-
+1. In terminal:
 ```powershell
 cd ASL_frontend
 npm run dev
 ```
 
 Backend:
-Open Ollama process, and in terminal
+1. Open Ollama process
+2. In terminal:
 ```powershell
 cd ASL_backend
 .\venv\Scripts\Activate.ps1
@@ -124,12 +127,12 @@ python manage.py migrate
 
 ## Check ASL video database
 
-```
-Add videos > ASL_backend > assets then run the commands below.
-powershell
+Add videos -> ASL_frontend/public then run the commands below.
+
+```powershell
 cd ASL_backend
 .\venv\Scripts\python.exe manage.py migrate
 .\venv\Scripts\python.exe manage.py sync_asl_videos
 .\venv\Scripts\python.exe manage.py runserver
-http://127.0.0.1:8000/assets/hello.mp4
+http://127.0.0.1:5173/words/hello.mp4
 ```

@@ -30,7 +30,7 @@ def get_signs_from_images(blob_images):
     for blob_image in blob_images:
         images.append(Image.open(blob_image))
 
-    model = YOLO("api/model/10-class-no-background.pt")
+    model = YOLO("api/yolo/10-class-no-background.pt")
     results = model(images)
 
     meanings = []

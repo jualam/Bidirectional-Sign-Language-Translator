@@ -8,7 +8,7 @@ from ollama import chat
 OLLAMA_MODEL = "llama3.2:3b"
 
 @api_view(["POST"])
-@parser_classes([FormParser])
+#@parser_classes([FormParser])
 def english_to_asl(request):
     text = request.data.get("text", "")
     conversation_context = request.data.get("context", "")
@@ -22,17 +22,20 @@ def english_to_asl(request):
         )
     
     signs = english_to_signs(text, conversation_context)
-    result = match_asl_signs_to_videos(translation_plan["asl_sign_sequence"])
+    result = match_asl_signs_to_videos(signs)
     
     return Response(
         {
             "message": "English to ASL translation sequence generated.",
+            "words": result["words"],
             "sequence": result["sequence"],
+            "missing_words": result["missing_words"],
+            "missing_letters": result["missing_letters"]
         }
     )
 
-#TODO: store these in the database somehow
-#TODO: add words here whenever they show up in translation where they shouldnt
+#TODO: store these in the database (maybe)
+#TODO: add words here after testing translation
 ignore = ['are', 'is', 'am', 'was', 'will', 'to', 'the', 'a', 'an']
 replace = {
     "i'm":"i",
@@ -50,7 +53,8 @@ def english_to_signs(text, conversation_context=""):
         elif word in replace: 
             signs.append(replace[word])
         else: 
-            signs.append(word)        
+            signs.append(word)  
+    return signs
     
 
 def match_asl_signs_to_videos(sign_sequence):

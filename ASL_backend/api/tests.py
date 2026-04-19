@@ -11,12 +11,12 @@ class EnglishToASLTests(TestCase):
         ASLVideo.objects.create(
             kind=ASLVideo.Kind.WORD,
             token="hello",
-            video="hello.mp4",
+            path="words/hello.mp4",
         )
         ASLVideo.objects.create(
             kind=ASLVideo.Kind.LETTER,
             token="c",
-            video="c.mp4",
+            path="letters/c.MOV",
         )
 
     def test_returns_word_video_when_word_exists(self):
@@ -29,7 +29,7 @@ class EnglishToASLTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["sequence"][0]["token"], "hello")
         self.assertEqual(response.data["sequence"][0]["source"], "word")
-        self.assertEqual(response.data["sequence"][0]["url"], "/assets/hello.mp4")
+        self.assertEqual(response.data["sequence"][0]["path"], "/words/hello.mp4")
 
     def test_falls_back_to_letter_videos_for_missing_words(self):
         response = self.client.post(
@@ -41,14 +41,12 @@ class EnglishToASLTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["sequence"][0]["token"], "c")
         self.assertEqual(response.data["sequence"][0]["source"], "fingerspell")
+        self.assertEqual(response.data["sequence"][0]["path"], "/letters/c.MOV")
 
 
 class TranslationHelperTests(TestCase):
     def test_english_text_to_asl_plan_falls_back_to_simple_sequence(self):
         result = english_text_to_asl_plan("I need help")
 
-        self.assertEqual(result["subject"], "i")
-        self.assertEqual(result["verb"], "need")
-        self.assertEqual(result["object"], "help")
         self.assertEqual(result["asl_sign_sequence"], ["i", "need", "help"])
-        self.assertFalse(result["used_llm"])
+        

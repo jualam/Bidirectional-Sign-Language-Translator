@@ -17,8 +17,7 @@ def video_payload(video, source):
         "id": video.id,
         "token": video.token,
         "kind": video.kind,
-        "source": source,
-        "url": video.video.url,
+        "path": video.path,
     }
 
 def build_translation_sequence(text):
@@ -54,15 +53,6 @@ def build_translation_sequence(text):
                 sequence.append(video_payload(letter_video, "fingerspell"))
             else:
                 missing_letters.append(letter)
-                sequence.append(
-                    {
-                        "id": None,
-                        "token": letter,
-                        "kind": ASLVideo.Kind.LETTER,
-                        "source": "missing-letter",
-                        "url": None,
-                    }
-                )
     return {
         "words": words,
         "sequence": sequence,
@@ -70,37 +60,39 @@ def build_translation_sequence(text):
         "missing_letters": sorted(set(missing_letters)),
     }
 def sync_asset_videos():
-    # This helper is for when local sign videos are added under MEDIA_ROOT
-    # such as D:\ASL-Translator\ASL_backend\assets.
-    # TODO: revisit if you later store videos differently or rename tokens.
     created = 0
     updated = 0
     skipped = []
-    assets_path = Path(settings.MEDIA_ROOT)
-    assets_path.mkdir(parents=True, exist_ok=True)
+    word_assets_path = settings.BASE_VIDEO_PATH / "words"
+    letter_assets_path = settings.BASE_VIDEO_PATH / "letters"
+    assets = (
+        (word_assets_path, ASLVideo.Kind.WORD, "/letters/"),
+        (letter_assets_path, ASLVideo.Kind.LETTER, "/words/")
+    )
 
-    for path in sorted(assets_path.iterdir()):
-        if not path.is_file() or path.suffix.lower() not in VIDEO_EXTENSIONS:
-            continue
+    for assets_path, type, dir in assets:
+        for path in sorted(assets_path.iterdir()):
+            if not path.is_file() or path.suffix.lower() not in VIDEO_EXTENSIONS:
+                continue
 
-        token = normalize_token(path.stem)
-        if len(token) == 1 and token.isalpha():
-            kind = ASLVideo.Kind.LETTER
-        elif token.isalpha():
-            kind = ASLVideo.Kind.WORD
-        else:
-            skipped.append(path.name)
-            continue
-
-        video, was_created = ASLVideo.objects.update_or_create(
-            kind=kind,
-            token=token,
-            defaults={"video": path.name},
-        )
-        if was_created:
-            created += 1
-        else:
-            updated += 1
+            token = normalize_token(path.stem)
+            if token.isalpha():
+                kind = type
+            else:
+                skipped.append(path.name)
+                continue
+            
+            url = dir + path.name
+            
+            video, was_created = ASLVideo.objects.update_or_create(
+                kind=kind,
+                token=token,
+                path=url,
+            )
+            if was_created:
+                created += 1
+            else:
+                updated += 1
 
     return {
         "created": created,
