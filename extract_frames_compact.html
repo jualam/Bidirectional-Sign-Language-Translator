@@ -40,7 +40,7 @@
 			baseOptions: {
 				modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task"
 			},
-			numHands: 2
+			numHands: 1
 		});
 	window.vision = vision
 	window.handLandmarker = handLandmarker
@@ -56,6 +56,7 @@
 	<video id='file_display' controls></video>
 	<canvas id='frame_display'></canvas>
 	<br/>
+	<input type='text' id='class_name' name='class_name' placeholder="Class name" size=10> </input>
 	<input type='text' id='class_number' name='class_number' placeholder='Class number' size=10> </input>
 	<button id='button_save_frame'>Save frame</button> <span id='num_saved'>0/20</span>
 	<input type='text' id='box_padding' name='box_padding' placeholder='Box Padding (0.05)' size=10> </input>
@@ -77,6 +78,7 @@ const num_saved = document.getElementById('num_saved');
 const button_save_frame = document.getElementById('button_save_frame');
 const button_download_frames = document.getElementById('button_download_frames');
 const start_number = document.getElementById('start_number');
+const class_name = document.getElementById('class_name');
 const class_number = document.getElementById('class_number');
 const box_padding = document.getElementById('box_padding');
 let url = "";
@@ -227,6 +229,10 @@ async function download_frames() {
 		alert('enter image start number first!');
 		return;
 	}
+	if (!class_name.value) {
+		alert('enter class name first!');
+		return;
+	}
 	let start = 0;
 	if (Number(start_number.value) > 0) {
 		start = Number(start_number.value);
@@ -236,14 +242,14 @@ async function download_frames() {
 		const canvas = frames[i];
 		const link1 = document.createElement('a');
 		let idx = start + Number(i);
-		link1.download = filename + '_' + idx + '.png';
+		link1.download = class_name.value + '_' + idx + '.png';
 		link1.href = canvas.dataset.img;
 		link1.click();
 		
 		const link2 = document.createElement('a');
 		const blob = new Blob([canvas.dataset.labels], {type: 'text/plain'});
 		const blobURL = URL.createObjectURL(blob);
-		link2.download = filename + '_' + idx + '.txt';
+		link2.download = class_name.value + '_' + idx + '.txt';
 		link2.href = blobURL;
 		link2.click();
 		
@@ -253,7 +259,7 @@ async function download_frames() {
 }
 
 function handle_keys(e) {
-	if (!([start_number, class_number, box_padding].includes(document.activeElement))) {
+	if (!([start_number, class_number, class_name, box_padding].includes(document.activeElement))) {
 	e.preventDefault();
 	if (video_has_loaded) {
 		if (e.key == "ArrowRight") {
@@ -267,7 +273,7 @@ function handle_keys(e) {
 	}
 }
 function stop_keys(e) {
-	if (!([start_number, class_number, box_padding].includes(document.activeElement)))
+	if (!([start_number, class_number, class_name, box_padding].includes(document.activeElement)))
 		e.preventDefault();
 }
 
