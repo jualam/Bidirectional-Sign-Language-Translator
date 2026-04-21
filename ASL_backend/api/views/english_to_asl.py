@@ -3,6 +3,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from ..services import build_translation_sequence
 from ..models import ASLVideo
+import re
 #from ollama import chat
 
 #OLLAMA_MODEL = "llama3.2:3b"
@@ -34,6 +35,14 @@ def english_to_asl(request):
         }
     )
 
+
+WORD_RE = re.compile(r"[a-zA-Z]+")
+
+def normalize_token(value):
+    return value.lower().strip()
+#This extracts clean English words.
+def tokenize_text(text):
+    return [normalize_token(match.group(0)) for match in WORD_RE.finditer(text)]
 #TODO: store these in the database (maybe)
 #TODO: add words here after testing translation
 ignore = ['are', 'is', 'am', 'was', 'will', 'to', 'the', 'a', 'an']
@@ -43,10 +52,11 @@ replace = {
     "my":"i",
     "your":"you",
     "wasn't":"not",
-    "hi":"hello"
+    "hi":"hello",
+    "youre":"you"
 }
 def english_to_signs(text, conversation_context=""):
-    words = [word.lower() for word in text.split() if word.strip()]
+    words = tokenize_text(text)
     signs = []
     for word in words:
         if word in ignore:

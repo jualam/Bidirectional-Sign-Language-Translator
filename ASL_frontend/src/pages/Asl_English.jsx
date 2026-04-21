@@ -30,6 +30,7 @@ function AslEnglish() {
     const fileInput = document.getElementById('video-upload')
     const captureButton = document.getElementById('toggle-capture') 
     const textOutput = document.getElementById('text-output')
+	const detectedWords = document.getElementById('detected-words')
     
     let detectionMode = 0;
     let animationFrame = null;

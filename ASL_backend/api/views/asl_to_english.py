@@ -53,6 +53,9 @@ def signs_to_english_text(recognized_signs, conversation_context=""):
     Output one simple sentence that represents only the meaning of the signs. \
     Do not change I or you."
     
+    if len(cleaned_signs) <= 1:
+        return " ".join(cleaned_signs)
+    
     user_prompt = f"Signs: {' '.join(cleaned_signs)}"
     if (conversation_context):
         user_input += f"\nConversation context: {conversation_context}"
