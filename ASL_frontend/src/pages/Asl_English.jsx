@@ -279,8 +279,10 @@ function AslEnglish() {
         });
       const result = await response.json();
       
-      textOutput.innerText=result.translation;
-      saved = [];
+      
+	  saved = [];
+	  textOutput.innerText=result.translation;
+	  detectedWords.innerText = "Detected: " + result.recognized_signs.join(", ");
       }
     }
     }
@@ -406,8 +408,8 @@ function AslEnglish() {
               
             </div>
           </div>
-
-          <p className="text-xs text-gray-500 mt-5 text-center">
+			
+          <p id='detected-words' className="text-xs text-gray-500 mt-5 text-center">
             Detected gestures will be processed and converted into readable English text.
           </p>
 
