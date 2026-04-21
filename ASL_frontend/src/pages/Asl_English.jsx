@@ -117,7 +117,7 @@ function AslEnglish() {
 
     /* ----------- Hand Movement Detection ---------- */
     const MAX_BUFFER = 60;
-    const STILL_TIME = 5; // number of frames hand must be still to count as stopped
+    const STILL_TIME = 8; // number of frames hand must be still to count as stopped
     const STILL_TIME_MIDPOINT = 1; // frame to send when movement is detected, counted from end of buffer
     const OFF_SCREEN_TIME = 4; // number of frames hand must not be detected to be considered moving again
     const STILL_DISTANCE_IMAGE = 0.05; // distance away (within still_time frames) that hand must stay within to count as still -- image coordinates
@@ -283,7 +283,7 @@ function AslEnglish() {
       
 	  saved = [];
 	  textOutput.innerText=result.translation;
-	  detectedWords.innerText = "Detected: " + result.recognized_signs.join(", ");
+	  //detectedWords.innerText = "Detected: " + result.recognized_signs.join(", ");
       }
     }
     }
